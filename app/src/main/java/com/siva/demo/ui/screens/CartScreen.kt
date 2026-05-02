@@ -10,20 +10,23 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.siva.demo.data.model.CartItem
+import com.siva.demo.data.repository.AppRepository
 import com.siva.demo.ui.components.EmptyStateView
+import com.siva.demo.utils.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen() {
-    val cartItems = remember { mutableStateListOf<CartItem>() }
+fun CartScreen(repository: AppRepository) {
+    val initialCartItems = remember { repository.getCartItems() }
+    val cartItems = remember { mutableStateListOf<CartItem>().apply { addAll(initialCartItems) } }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Your Cart", style = MaterialTheme.typography.titleLarge) }
+                title = { Text(Constants.TITLE_CART, style = MaterialTheme.typography.titleLarge) }
             )
         },
         bottomBar = {
@@ -41,7 +44,7 @@ fun CartScreen() {
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Proceed to Pay ($12.50)", style = MaterialTheme.typography.titleMedium)
+                        Text(Constants.PROCEED_TO_PAY, style = MaterialTheme.typography.titleMedium)
                     }
                 }
             }
@@ -50,8 +53,8 @@ fun CartScreen() {
         if (cartItems.isEmpty()) {
             EmptyStateView(
                 icon = Icons.Outlined.ShoppingCart,
-                title = "Your cart is feeling lonely",
-                subtitle = "Explore our wide range of foods and groceries and add items to your cart."
+                title = Constants.EMPTY_CART_TITLE,
+                subtitle = Constants.EMPTY_CART_SUBTITLE
             )
         } else {
             LazyColumn(
@@ -88,7 +91,7 @@ fun CartItemRow(item: CartItem) {
             IconButton(onClick = { /* TODO */ }) {
                 Text("-", style = MaterialTheme.typography.titleLarge)
             }
-            Text(text = "1", modifier = Modifier.padding(horizontal = 8.dp))
+            Text(text = item.quantity.toString(), modifier = Modifier.padding(horizontal = 8.dp))
             IconButton(onClick = { /* TODO */ }) {
                 Text("+", style = MaterialTheme.typography.titleLarge)
             }
@@ -104,27 +107,25 @@ fun BillSummaryCard() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Bill Summary", style = MaterialTheme.typography.titleMedium)
+            Text(text = Constants.BILL_SUMMARY, style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(12.dp))
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                Text("Item Total")
+                Text(Constants.ITEM_TOTAL)
                 Text("$10.00")
             }
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                Text("Delivery Fee")
+                Text(Constants.DELIVERY_FEE)
                 Text("$2.00")
             }
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                Text("Taxes")
+                Text(Constants.TAXES)
                 Text("$0.50")
             }
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                Text("To Pay", fontWeight = FontWeight.Bold)
+                Text(Constants.TO_PAY, fontWeight = FontWeight.Bold)
                 Text("$12.50", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
         }
     }
 }
-
-data class CartItem(val name: String, val price: Double)

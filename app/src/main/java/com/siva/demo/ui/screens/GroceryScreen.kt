@@ -1,40 +1,32 @@
 package com.siva.demo.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.siva.demo.R
+import com.siva.demo.data.model.GroceryCategory
+import com.siva.demo.data.repository.AppRepository
+import com.siva.demo.utils.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroceryScreen() {
-    val categories = listOf(
-        GroceryCategory("Vegetables", R.drawable.vegs, Color(0xFFE8F5E9)),
-        GroceryCategory("Fruits", R.drawable.fruits, Color(0xFFFFF3E0)),
-        GroceryCategory("Dairy & Eggs", R.drawable.eggs, Color(0xFFE3F2FD)),
-        GroceryCategory("Bakery",R.drawable.bakery , Color(0xFFFBE9E7)),
-        GroceryCategory("Snacks",R.drawable.snacks , Color(0xFFFFFDE7)),
-        GroceryCategory("Beverages",R.drawable.beverages , Color(0xFFF3E5F5)),
-        GroceryCategory("Meat", R.drawable.meat, Color(0xFFFFEBEE)),
-        GroceryCategory("Cleaning", R.drawable.cleaning, Color(0xFFE0F7FA))
-    )
+fun GroceryScreen(repository: AppRepository) {
+    val categories = remember { repository.getGroceryCategories() }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text("Groceries", style = MaterialTheme.typography.titleLarge) }
+            title = { Text(Constants.TITLE_GROCERY, style = MaterialTheme.typography.titleLarge) }
         )
         
         LazyVerticalGrid(
@@ -83,5 +75,3 @@ fun GroceryCategoryCard(category: GroceryCategory) {
         }
     }
 }
-
-data class GroceryCategory(val name: String, val image: Any, val bgColor: Color)

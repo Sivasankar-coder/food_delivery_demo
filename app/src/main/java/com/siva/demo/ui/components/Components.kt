@@ -19,7 +19,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.siva.demo.data.model.Restaurant
 import com.siva.demo.ui.theme.StarYellow
+import com.siva.demo.utils.Constants
 
 @Composable
 fun SectionHeader(
@@ -41,7 +43,7 @@ fun SectionHeader(
         )
         TextButton(onClick = onSeeAllClick) {
             Text(
-                text = "See All",
+                text = Constants.SECTION_SEE_ALL,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.secondary
             )
@@ -55,11 +57,7 @@ fun SectionHeader(
  */
 @Composable
 fun RestaurantCard(
-    title: String,
-    image: Any,
-    rating: Double,
-    deliveryTime: String,
-    cuisine: String,
+    restaurant: Restaurant?,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false
 ) {
@@ -77,12 +75,12 @@ fun RestaurantCard(
                     .fillMaxWidth()
                     .height(180.dp)
             ) {
-                if (isLoading) {
+                if (isLoading || restaurant == null) {
                     Box(modifier = Modifier.fillMaxSize().shimmerEffect())
                 } else {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(image)
+                            .data(restaurant.image)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -98,15 +96,15 @@ fun RestaurantCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (isLoading) "" else title,
+                        text = if (isLoading || restaurant == null) "" else restaurant.name,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
-                            .then(if (isLoading) Modifier.width(150.dp).height(20.dp).shimmerEffect() else Modifier)
+                            .then(if (isLoading || restaurant == null) Modifier.width(150.dp).height(20.dp).shimmerEffect() else Modifier)
                     )
-                    if (!isLoading) {
+                    if (!isLoading && restaurant != null) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Filled.Star,
@@ -116,7 +114,7 @@ fun RestaurantCard(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = rating.toString(),
+                                text = restaurant.rating.toString(),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -125,10 +123,10 @@ fun RestaurantCard(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = if (isLoading) "" else "$cuisine • $deliveryTime",
+                    text = if (isLoading || restaurant == null) "" else "${restaurant.cuisine} • ${restaurant.deliveryTime}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = if (isLoading) Modifier.width(100.dp).height(16.dp).shimmerEffect() else Modifier
+                    modifier = if (isLoading || restaurant == null) Modifier.width(100.dp).height(16.dp).shimmerEffect() else Modifier
                 )
             }
         }

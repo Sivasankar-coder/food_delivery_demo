@@ -8,47 +8,57 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.siva.demo.R
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.siva.demo.data.model.ProfileOption
+import com.siva.demo.data.model.UserProfile
+import com.siva.demo.data.repository.AppRepository
+import com.siva.demo.utils.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
-    val options = listOf(
-        ProfileOption("Your Orders", Icons.Outlined.ShoppingBag),
-        ProfileOption("Favorite Restaurants", Icons.Outlined.FavoriteBorder),
-        ProfileOption("Saved Addresses", Icons.Outlined.LocationOn),
-        ProfileOption("Payments", Icons.Outlined.Payment),
-        ProfileOption("Settings", Icons.Outlined.Settings),
-        ProfileOption("Help & Support", Icons.Outlined.HelpOutline),
-        ProfileOption("Logout", Icons.Outlined.Logout)
-    )
+fun ProfileScreen(repository: AppRepository) {
+    val userProfile = remember { repository.getUserProfile() }
+    val options = remember {
+        listOf(
+            ProfileOption(Constants.OPTION_ORDERS, Icons.Outlined.ShoppingBag),
+            ProfileOption(Constants.OPTION_FAVORITES, Icons.Outlined.FavoriteBorder),
+            ProfileOption(Constants.OPTION_ADDRESSES, Icons.Outlined.LocationOn),
+            ProfileOption(Constants.OPTION_PAYMENTS, Icons.Outlined.Payment),
+            ProfileOption(Constants.OPTION_SETTINGS, Icons.Outlined.Settings),
+            ProfileOption(Constants.OPTION_HELP, Icons.Outlined.HelpOutline),
+            ProfileOption(Constants.OPTION_LOGOUT, Icons.Outlined.Logout)
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text("Profile", style = MaterialTheme.typography.titleLarge) }
+            title = { Text(Constants.TITLE_PROFILE, style = MaterialTheme.typography.titleLarge) }
         )
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
-                ProfileHeader()
+                ProfileHeader(userProfile)
             }
             items(options) { option ->
                 ProfileOptionRow(option)
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                )
             }
         }
     }
 }
 
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(userProfile: UserProfile) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,16 +66,16 @@ fun ProfileHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = R.drawable.user,
-            contentDescription = "Profile Picture",
+            model = userProfile.profilePicture,
+            contentDescription = Constants.TITLE_PROFILE,
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Text(text = "Siva", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Text(text = "sivademo@gmail.com", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(text = userProfile.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(text = userProfile.email, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
     }
 }
@@ -102,5 +112,3 @@ fun ProfileOptionRow(option: ProfileOption) {
         }
     }
 }
-
-data class ProfileOption(val title: String, val icon: ImageVector)

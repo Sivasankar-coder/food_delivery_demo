@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.siva.demo.utils.Constants
 
 sealed class Screen(
     val route: String,
@@ -12,32 +13,32 @@ sealed class Screen(
     val unselectedIcon: ImageVector
 ) {
     object Home : Screen(
-        route = "home",
-        title = "Home",
+        route = Constants.ROUTE_HOME,
+        title = Constants.NAV_HOME,
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
     )
     object Food : Screen(
-        route = "food",
-        title = "Food",
+        route = Constants.ROUTE_FOOD,
+        title = Constants.NAV_FOOD,
         selectedIcon = Icons.Filled.Restaurant,
         unselectedIcon = Icons.Outlined.Restaurant
     )
     object Grocery : Screen(
-        route = "grocery",
-        title = "Grocery",
+        route = Constants.ROUTE_GROCERY,
+        title = Constants.NAV_GROCERY,
         selectedIcon = Icons.Filled.ShoppingBag,
         unselectedIcon = Icons.Outlined.ShoppingBag
     )
     object Cart : Screen(
-        route = "cart",
-        title = "Cart",
+        route = Constants.ROUTE_CART,
+        title = Constants.NAV_CART,
         selectedIcon = Icons.Filled.ShoppingCart,
         unselectedIcon = Icons.Outlined.ShoppingCart
     )
     object Profile : Screen(
-        route = "profile",
-        title = "Profile",
+        route = Constants.ROUTE_PROFILE,
+        title = Constants.NAV_PROFILE,
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person
     )
